@@ -1,0 +1,12 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: pv-vol1
+spec:
+    accessModes:
+        - ReadWriteMany
+    capacity:
+     storage: 1Gi
+    hostPath:
+     path: /tmp/data
+    persistentVolumeReclaimPolicy: Retain   
