@@ -320,6 +320,7 @@
 │   ├── wordpress-deploy-svc.yaml
 │   └── ~
 ├── test.md
+├── tree.md
 └── udemy
     ├── crd
     │   ├── crd.txt
@@ -369,4 +370,4 @@
         ├── sc-pod.yaml
         └── sc.yaml
 
-53 directories, 316 files
+53 directories, 317 files
