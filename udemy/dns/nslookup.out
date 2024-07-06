@@ -1,0 +1,6 @@
+Server:		10.96.0.10
+Address:	10.96.0.10#53
+
+Name:	nginx-app.default.svc.cluster.local
+Address: 10.111.194.61
+
