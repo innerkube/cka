@@ -26,13 +26,13 @@ kind: Service
 metadata:
   name: ssl80
 spec:
-  type: NodePort 
-#  type: LoadBalancer
+  #  type: NodePort 
+  type: LoadBalancer
   selector:
     app: ssl80
-#  loadBalancerIP: 10.178.0.7
+  loadBalancerIP: 192.168.100.72
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 80
+      #    nodePort: 80

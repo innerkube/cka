@@ -1,0 +1,107 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+    creationTimestamp: "2024-07-01T08:26:18Z"
+    generation: 1
+    labels:
+      k8s-app: fluentd-logging
+      kubernetes.io/cluster-service: "true"
+      version: v1
+    name: fluentd
+    namespace: kube-logging
+    resourceVersion: "435709"
+    uid: 9c500596-1658-4239-96a5-0b7fd1ca0b86
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        k8s-app: fluentd-logging
+        kubernetes.io/cluster-service: "true"
+        version: v1
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          k8s-app: fluentd-logging
+          kubernetes.io/cluster-service: "true"
+          version: v1
+      spec:
+        nodeSelector:
+          label: "true"
+        containers:
+        - env:
+          - name: FLUENT_ELASTICSEARCH_HOST
+            value: elasticsearch-client.kube-logging.svc.cluster.local
+          - name: FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: http
+          - name: FLUENT_ELASTICSEARCH_USER
+            value: elastic
+          - name: FLUENT_ELASTICSEARCH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: elasticsearch-pw-elastic
+          image: fluent/fluentd-kubernetes-daemonset:v1.1-debian-elasticsearch
+          imagePullPolicy: IfNotPresent
+          name: fluentd
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/log
+            name: varlog
+          - mountPath: /var/lib/docker/containers
+            name: varlibdockercontainers
+            readOnly: true
+          - mountPath: /fluentd/etc
+            name: fluentd-config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: fluentd
+        serviceAccountName: fluentd
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+        volumes:
+        - hostPath:
+            path: /var/log
+            type: ""
+          name: varlog
+        - hostPath:
+            path: /var/lib/docker/containers
+            type: ""
+          name: varlibdockercontainers
+        - configMap:
+            defaultMode: 420
+            name: fluentd-config
+          name: fluentd-config
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 2
+    desiredNumberScheduled: 2
+    numberAvailable: 2
+    numberMisscheduled: 0
+    numberReady: 2
+    observedGeneration: 1
+    updatedNumberScheduled: 2
+kind: List
+metadata:
+  resourceVersion: ""

@@ -1,12 +1,22 @@
-
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hello-nihao-ingress
+  name: ssl80-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  
 spec:
   ingressClassName: nginx
   rules:
+  - host: worker2.innerinfo.io
+    http:
+      paths:
+      - path: /food
+        pathType: Prefix
+        backend:
+          service:
+            name: ssl80
+            port:
+              number: 80
   - host: worker2.innerinfo.io
     http:
       paths:
@@ -17,11 +27,14 @@ spec:
             name: nihao
             port:
               number: 80
-      - path: /hello
+  - host: worker2.innerinfo.io
+    http:
+      paths:
+      - path: /sale
         pathType: Prefix
         backend:
           service:
-            name: hello
+            name: sale
             port:
               number: 80
 

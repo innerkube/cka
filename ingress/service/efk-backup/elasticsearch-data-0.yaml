@@ -1,0 +1,864 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 7a128dce7a5c8177ac4a09eb6bc5068e8d988e9bd9ccaedba968b87b3947b4a0
+      cni.projectcalico.org/podIP: 10.244.235.146/32
+      cni.projectcalico.org/podIPs: 10.244.235.146/32
+    creationTimestamp: "2024-07-01T08:07:38Z"
+    deletionGracePeriodSeconds: 30
+    deletionTimestamp: "2024-07-06T18:13:13Z"
+    generateName: elasticsearch-client-84f9c5789-
+    labels:
+      app: elasticsearch
+      pod-template-hash: 84f9c5789
+      role: client
+    name: elasticsearch-client-84f9c5789-wwz5m
+    namespace: kube-logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: elasticsearch-client-84f9c5789
+      uid: f9440f6c-9ab8-4ef6-b737-447380716edf
+    resourceVersion: "1143967"
+    uid: 0d1cc287-4eb8-4681-949d-94ec8045c305
+  spec:
+    containers:
+      - env:
+      - name: CLUSTER_NAME
+        value: elasticsearch
+      - name: NODE_NAME
+        value: elasticsearch-client
+      - name: NODE_LIST
+        value: elasticsearch-master,elasticsearch-data,elasticsearch-client
+      - name: MASTER_NODES
+        value: elasticsearch-master
+      - name: ES_JAVA_OPTS
+        value: -Xms256m -Xmx256m
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imagePullPolicy: IfNotPresent
+      name: elasticsearch-client
+      ports:
+      - containerPort: 9200
+        name: client
+        protocol: TCP
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+        name: config
+        readOnly: true
+        subPath: elasticsearch.yml
+      - mountPath: /data
+        name: storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-cs97z
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sysctl
+      - -w
+      - vm.max_map_count=262144
+      image: busybox
+      imagePullPolicy: Always
+      name: increase-vm-max-map
+      resources: {}
+      securityContext:
+        privileged: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-cs97z
+        readOnly: true
+    nodeName: worker1
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: elasticsearch-client-config
+      name: config
+    - emptyDir: {}
+      name: storage
+    - name: kube-api-access-cs97z
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:15Z"
+      status: "False"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:07:41Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:15Z"
+      message: 'containers with unready status: [elasticsearch-client]'
+      reason: ContainersNotReady
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:15Z"
+      message: 'containers with unready status: [elasticsearch-client]'
+      reason: ContainersNotReady
+      status: "False"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:07:38Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://5b2985aabb37dfa726bbf01643e39a538da493844c36752aad16806122d1e528
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imageID: docker.elastic.co/elasticsearch/elasticsearch@sha256:8c7075b17918a954e34d71ab1661ea14737429426376d045a23e79c3632346ab
+      lastState: {}
+      name: elasticsearch-client
+      ready: false
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://5b2985aabb37dfa726bbf01643e39a538da493844c36752aad16806122d1e528
+          exitCode: 143
+          finishedAt: "2024-07-06T18:12:44Z"
+          reason: Error
+          startedAt: "2024-07-01T08:07:41Z"
+    hostIP: 192.168.100.71
+    hostIPs:
+    - ip: 192.168.100.71
+    initContainerStatuses:
+    - containerID: containerd://58cbaf10786637862ff24abfd2c6582f778ab89da426a0111be76bb8e0c7ea8b
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7
+      lastState: {}
+      name: increase-vm-max-map
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://58cbaf10786637862ff24abfd2c6582f778ab89da426a0111be76bb8e0c7ea8b
+          exitCode: 0
+          finishedAt: "2024-07-01T08:07:40Z"
+          reason: Completed
+          startedAt: "2024-07-01T08:07:40Z"
+    phase: Running
+    podIP: 10.244.235.146
+    podIPs:
+    - ip: 10.244.235.146
+    qosClass: BestEffort
+    startTime: "2024-07-01T08:07:38Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 141efb3690e9856fd6acdfdbc5b85cbf4b803050e169c517d2ec2a9560566349
+      cni.projectcalico.org/podIP: 10.244.235.147/32
+      cni.projectcalico.org/podIPs: 10.244.235.147/32
+    creationTimestamp: "2024-07-01T08:07:22Z"
+    generateName: elasticsearch-data-
+    labels:
+      app: elasticsearch-data
+      apps.kubernetes.io/pod-index: "0"
+      controller-revision-hash: elasticsearch-data-76bdf989b6
+      role: data
+      statefulset.kubernetes.io/pod-name: elasticsearch-data-0
+    name: elasticsearch-data-0
+    namespace: kube-logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: elasticsearch-data
+      uid: 4eb3301e-0bc1-4bc3-a3f7-26e108ca9293
+    resourceVersion: "434239"
+    uid: 2775f12f-f4fa-4fba-950b-8616d1ebc5ad
+  spec:
+    containers:
+    - env:
+      - name: CLUSTER_NAME
+        value: elasticsearch
+      - name: NODE_NAME
+        value: elasticsearch-data
+      - name: NODE_LIST
+        value: elasticsearch-master,elasticsearch-data,elasticsearch-client
+      - name: MASTER_NODES
+        value: elasticsearch-master
+      - name: ES_JAVA_OPTS
+        value: -Xms300m -Xmx300m
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imagePullPolicy: IfNotPresent
+      name: elasticsearch-data
+      ports:
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+        name: config
+        readOnly: true
+        subPath: elasticsearch.yml
+      - mountPath: /data/db
+        name: elasticsearch-data-persistent-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9hndq
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostname: elasticsearch-data-0
+    initContainers:
+    - command:
+      - sysctl
+      - -w
+      - vm.max_map_count=262144
+      image: busybox
+      imagePullPolicy: Always
+      name: increase-vm-max-map
+      resources: {}
+      securityContext:
+        privileged: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9hndq
+        readOnly: true
+    nodeName: worker1
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    subdomain: elasticsearch-data
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: elasticsearch-data-persistent-storage
+      persistentVolumeClaim:
+        claimName: elasticsearch-data-persistent-storage-elasticsearch-data-0
+    - configMap:
+        defaultMode: 420
+        name: elasticsearch-data-config
+      name: config
+    - name: kube-api-access-9hndq
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:12:40Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:12:40Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:12:41Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:12:41Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:12:37Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://5bd8c3e2f630005e55c3dc0204f79d487c79426081f42695affa8406678c76e3
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imageID: docker.elastic.co/elasticsearch/elasticsearch@sha256:8c7075b17918a954e34d71ab1661ea14737429426376d045a23e79c3632346ab
+      lastState: {}
+      name: elasticsearch-data
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2024-07-01T08:12:41Z"
+    hostIP: 192.168.100.71
+    hostIPs:
+    - ip: 192.168.100.71
+    initContainerStatuses:
+    - containerID: containerd://d922aaade02e3a9f32246b513819fd2e5f74bde59f9a832008dd435982645e40
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7
+      lastState: {}
+      name: increase-vm-max-map
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://d922aaade02e3a9f32246b513819fd2e5f74bde59f9a832008dd435982645e40
+          exitCode: 0
+          finishedAt: "2024-07-01T08:12:40Z"
+          reason: Completed
+          startedAt: "2024-07-01T08:12:40Z"
+    phase: Running
+    podIP: 10.244.235.147
+    podIPs:
+    - ip: 10.244.235.147
+    qosClass: BestEffort
+    startTime: "2024-07-01T08:12:37Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 2f41afffceb2690b1141c3808841497341fa0b066099e911c30307c28fb48200
+      cni.projectcalico.org/podIP: 10.244.235.145/32
+      cni.projectcalico.org/podIPs: 10.244.235.145/32
+    creationTimestamp: "2024-07-01T08:07:07Z"
+    deletionGracePeriodSeconds: 30
+    deletionTimestamp: "2024-07-06T18:13:20Z"
+    generateName: elasticsearch-master-8459b8fc8c-
+    labels:
+      app: elasticsearch
+      pod-template-hash: 8459b8fc8c
+      role: master
+    name: elasticsearch-master-8459b8fc8c-tw7bn
+    namespace: kube-logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: elasticsearch-master-8459b8fc8c
+      uid: 6ffb336f-3d30-424c-b10c-2e74223d7b3d
+    resourceVersion: "1143982"
+    uid: ee01adfe-eefc-4083-b7e9-27b2ac541836
+  spec:
+    containers:
+    - env:
+      - name: CLUSTER_NAME
+        value: elasticsearch
+      - name: NODE_NAME
+        value: elasticsearch-master
+      - name: NODE_LIST
+        value: elasticsearch-master,elasticsearch-data,elasticsearch-client
+      - name: MASTER_NODES
+        value: elasticsearch-master
+      - name: ES_JAVA_OPTS
+        value: -Xms256m -Xmx256m
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imagePullPolicy: IfNotPresent
+      name: elasticsearch-master
+      ports:
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+        name: config
+        readOnly: true
+        subPath: elasticsearch.yml
+      - mountPath: /data
+        name: storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-tvt6j
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sysctl
+      - -w
+      - vm.max_map_count=262144
+      image: busybox
+      imagePullPolicy: Always
+      name: increase-vm-max-map
+      resources: {}
+      securityContext:
+        privileged: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-tvt6j
+        readOnly: true
+    nodeName: worker1
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: elasticsearch-master-config
+      name: config
+    - emptyDir: {}
+      name: storage
+    - name: kube-api-access-tvt6j
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:22Z"
+      status: "False"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:07:10Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:22Z"
+      message: 'containers with unready status: [elasticsearch-master]'
+      reason: ContainersNotReady
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:13:22Z"
+      message: 'containers with unready status: [elasticsearch-master]'
+      reason: ContainersNotReady
+      status: "False"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:07:07Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://9dfd2e9c05392a1eaeec5174e6610e97ac48f25677176268926fe67d01bdda35
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+      imageID: docker.elastic.co/elasticsearch/elasticsearch@sha256:8c7075b17918a954e34d71ab1661ea14737429426376d045a23e79c3632346ab
+      lastState: {}
+      name: elasticsearch-master
+      ready: false
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://9dfd2e9c05392a1eaeec5174e6610e97ac48f25677176268926fe67d01bdda35
+          exitCode: 143
+          finishedAt: "2024-07-06T18:12:51Z"
+          reason: Error
+          startedAt: "2024-07-01T08:07:10Z"
+    hostIP: 192.168.100.71
+    hostIPs:
+    - ip: 192.168.100.71
+    initContainerStatuses:
+    - containerID: containerd://856c9cb4377841c4b465c87527275c2212b00a39573ebaf88f717f66aa59e869
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7
+      lastState: {}
+      name: increase-vm-max-map
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://856c9cb4377841c4b465c87527275c2212b00a39573ebaf88f717f66aa59e869
+          exitCode: 0
+          finishedAt: "2024-07-01T08:07:09Z"
+          reason: Completed
+          startedAt: "2024-07-01T08:07:09Z"
+    phase: Running
+    podIP: 10.244.235.145
+    podIPs:
+    - ip: 10.244.235.145
+    qosClass: BestEffort
+    startTime: "2024-07-01T08:07:07Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: dd481fa0096c3de087c90f7802a88a32af36adb7a2bf4b8d12fbe8c63d39fd9e
+      cni.projectcalico.org/podIP: 10.244.235.149/32
+      cni.projectcalico.org/podIPs: 10.244.235.149/32
+    creationTimestamp: "2024-07-01T08:26:18Z"
+    deletionGracePeriodSeconds: 30
+    deletionTimestamp: "2024-07-06T18:22:16Z"
+    generateName: fluentd-
+    labels:
+      controller-revision-hash: 558986b898
+      k8s-app: fluentd-logging
+      kubernetes.io/cluster-service: "true"
+      pod-template-generation: "1"
+      version: v1
+    name: fluentd-rng9c
+    namespace: kube-logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: fluentd
+      uid: 9c500596-1658-4239-96a5-0b7fd1ca0b86
+    resourceVersion: "1144933"
+    uid: cb06c05c-a148-467a-80d9-8991c6bc9c8e
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - worker1
+    containers:
+    - env:
+      - name: FLUENT_ELASTICSEARCH_HOST
+        value: elasticsearch-client.kube-logging.svc.cluster.local
+      - name: FLUENT_ELASTICSEARCH_PORT
+        value: "9200"
+      - name: FLUENT_ELASTICSEARCH_SCHEME
+        value: http
+      - name: FLUENT_ELASTICSEARCH_USER
+        value: elastic
+      - name: FLUENT_ELASTICSEARCH_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: elasticsearch-pw-elastic
+      image: fluent/fluentd-kubernetes-daemonset:v1.1-debian-elasticsearch
+      imagePullPolicy: IfNotPresent
+      name: fluentd
+      resources:
+        limits:
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 500Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /fluentd/etc
+        name: fluentd-config
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-2s62q
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: worker1
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: fluentd
+    serviceAccountName: fluentd
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    volumes:
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - configMap:
+        defaultMode: 420
+        name: fluentd-config
+      name: fluentd-config
+    - name: kube-api-access-2s62q
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:22:24Z"
+      status: "False"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:26:18Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:22:24Z"
+      message: 'containers with unready status: [fluentd]'
+      reason: ContainersNotReady
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-06T18:22:24Z"
+      message: 'containers with unready status: [fluentd]'
+      reason: ContainersNotReady
+      status: "False"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:26:18Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://ef77ed8ba7a74ed07ae58d182c065fc8f8efd89ce287f44dd1ccbb961760c5c2
+      image: docker.io/fluent/fluentd-kubernetes-daemonset:v1.1-debian-elasticsearch
+      imageID: docker.io/fluent/fluentd-kubernetes-daemonset@sha256:dbcf0e737537ff9e0c09e6931660ee638a3d344220893a847fa4be858cb95c1f
+      lastState: {}
+      name: fluentd
+      ready: false
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://ef77ed8ba7a74ed07ae58d182c065fc8f8efd89ce287f44dd1ccbb961760c5c2
+          exitCode: 0
+          finishedAt: "2024-07-06T18:21:53Z"
+          reason: Completed
+          startedAt: "2024-07-01T08:26:19Z"
+    hostIP: 192.168.100.71
+    hostIPs:
+    - ip: 192.168.100.71
+    phase: Running
+    podIP: 10.244.235.149
+    podIPs:
+    - ip: 10.244.235.149
+    qosClass: Burstable
+    startTime: "2024-07-01T08:26:18Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 3ed6c724fa1c4a09f1a7bb99d5778e04d0d3cc326b7d0f3eb3c4af9ea1bfcd35
+      cni.projectcalico.org/podIP: 10.244.235.150/32
+      cni.projectcalico.org/podIPs: 10.244.235.150/32
+    creationTimestamp: "2024-07-01T08:28:31Z"
+    labels:
+      run: nginx
+    name: nginx
+    namespace: kube-logging
+    resourceVersion: "435924"
+    uid: 34d066f0-f42b-4c37-8784-6dd6c2b2a159
+  spec:
+    containers:
+    - image: nginx
+      imagePullPolicy: Always
+      name: nginx
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-5rr2f
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: worker1
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-5rr2f
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:28:35Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:28:32Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:28:35Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:28:35Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2024-07-01T08:28:31Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://1153bf45f3573be0fbb4536a0c5f1d6407806ef70c5b6d73664ebe675cf530b7
+      image: docker.io/library/nginx:latest
+      imageID: docker.io/library/nginx@sha256:9c367186df9a6b18c6735357b8eb7f407347e84aea09beb184961cb83543d46e
+      lastState: {}
+      name: nginx
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2024-07-01T08:28:34Z"
+    hostIP: 192.168.100.71
+    hostIPs:
+    - ip: 192.168.100.71
+    phase: Running
+    podIP: 10.244.235.150
+    podIPs:
+    - ip: 10.244.235.150
+    qosClass: BestEffort
+    startTime: "2024-07-01T08:28:32Z"
+kind: List
+metadata:
+  resourceVersion: ""
