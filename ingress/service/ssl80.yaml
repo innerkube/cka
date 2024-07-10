@@ -16,7 +16,7 @@ spec:
         app: ssl80     # 라벨명
     spec:
       containers:
-      - name: ssl-web
+      - name: food-web
         image: hwlim78/web-site:food
         ports:
         - containerPort: 80
@@ -30,6 +30,12 @@ spec:
   selector:
     app: ssl80
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 80
     targetPort: 80
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 443
+    
