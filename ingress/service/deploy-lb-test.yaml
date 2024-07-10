@@ -27,12 +27,13 @@ kind: Service
 metadata:
   name: lb-test
 spec:
-  type: LoadBalancer
+  #  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: lb-test
-  loadBalancerIP: 192.168.100.62
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
+
 

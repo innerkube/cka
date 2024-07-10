@@ -27,7 +27,6 @@ metadata:
   labels:
     app: hello
   name: hello
-  namespace: default   # 네임스페이스 지정(기본 default)
 spec:
   type: NodePort
   ports:

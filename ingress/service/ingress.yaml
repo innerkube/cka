@@ -1,27 +1,25 @@
-
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hello-nihao-ingress
+  name: green-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - host: worker2.innerinfo.io
+  - host: worker1.innerinfo.io
     http:
       paths:
-      - path: /nihao
+      - path: /green
         pathType: Prefix
         backend:
           service:
-            name: nihao
+            name: green
             port:
               number: 80
-      - path: /hello
+      - path: /blue
         pathType: Prefix
         backend:
           service:
-            name: hello
+            name: blue
             port:
               number: 80
 

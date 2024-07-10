@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sale
+  name: blue
   labels:
-    app: sale
+    app: blue
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: sale
+      app: blue
+
   template:
     metadata:
       labels:
-        app: sale      # 라벨명
+        app: blue   # 라벨명
     spec:
       containers:
-      - name: sale-web
-        image: hwlim78/web-site:sale
+      - name: blue-web
+        image: thekoguryo/nginx-hello:blue
 #        image: gcr.io/google-samples/kubernetes-bootcamp:v1
         ports:
         - containerPort: 80
@@ -24,14 +25,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sale
+  name: blue
 spec:
+  #  type: LoadBalancer
   type: ClusterIP
   selector:
-    app: sale
+    app: blue
   ports:
-  - name: http
-    protocol: TCP
+  - protocol: TCP
     port: 80
     targetPort: 80
 

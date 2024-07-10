@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sale
+  name: food
   labels:
-    app: sale
+    app: food
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: sale
+      app: food
+
   template:
     metadata:
       labels:
-        app: sale      # 라벨명
+        app: food    # 라벨명
     spec:
       containers:
-      - name: sale-web
-        image: hwlim78/web-site:sale
-#        image: gcr.io/google-samples/kubernetes-bootcamp:v1
+      - name: food-web
+        image: hwlim78/web-site:food
         ports:
         - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sale
+  name: food
 spec:
   type: ClusterIP
+    #type: LoadBalancer
   selector:
-    app: sale
+    app: food
   ports:
-  - name: http
-    protocol: TCP
+  - protocol: TCP
     port: 80
     targetPort: 80
 

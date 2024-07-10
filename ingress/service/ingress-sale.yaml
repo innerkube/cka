@@ -1,40 +1,41 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ssl80-ingress
+  name: sale-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /  
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-  - host: worker2.innerinfo.io
-    http:
-      paths:
-      - path: /food
-        pathType: Prefix
-        backend:
-          service:
-            name: ssl80
-            port:
-              number: 80
-  - host: worker2.innerinfo.io
-    http:
-      paths:
-      - path: /hello
-        pathType: Prefix
-        backend:
-          service:
-            name: hello
-            port:
-              number: 80
   - host: worker1.innerinfo.io
     http:
       paths:
-      - path: /sale
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: sale
             port:
               number: 80
+      - path: /food
+        pathType: Prefix
+        backend:
+          service:
+            name: food
+            port:
+              number: 80
+      - path: /blue
+        pathType: Prefix
+        backend:
+          service:
+            name: blue
+            port:
+              number: 80
+      - path: /green
+        pathType: Prefix
+        backend:
+          service:
+            name: green
+            port:
+              number: 80    
 
