@@ -1,0 +1,6 @@
+/ # nslookup nginx-resolver-service.cka.svc.cluster.local
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+Name:   nginx-resolver-service.cka.svc.cluster.local
+Address: 10.105.34.43

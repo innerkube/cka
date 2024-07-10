@@ -1,0 +1,7 @@
+/ # nslookup 172-16-235-143.cka.pod.cluster.local
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+
+Name:   172-16-235-143.cka.pod.cluster.local
+Address: 172.16.235.143
