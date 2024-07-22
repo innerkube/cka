@@ -19,6 +19,15 @@ name: beta
 Solution manifest file to create a multi-container pod multi-pod as follows:
 
 ```
+kubectl run multi-pod --image=nginx --dry-run=client -o yaml > multi-pod.yaml
+
+```
+
+
+
+
+
+```
 ---
 apiVersion: v1
 kind: Pod
@@ -29,14 +38,14 @@ spec:
   - image: nginx
     name: alpha
     env:
-    - name: name
+      - name: name
       value: alpha
   - image: busybox
     name: beta
     command: ["sleep", "4800"]
     env:
-    - name: name
-      value: beta
+      - name: name
+        value: beta
 ```
 
 

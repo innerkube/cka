@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+spec:
+  selector:
+    matchLabels:
+      app: php
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      containers:
+      - name: php
+        image: hwlim78/gaon-php:v1.0 # 빌드한 이미지를 여기에 사용합니다.
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: source-code
+      volumes:
+      - name: source-code
+        persistentVolumeClaim:
+          claimName: source-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+  selector:
+    app: php
+

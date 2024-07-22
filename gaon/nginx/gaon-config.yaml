@@ -1,0 +1,39 @@
+apiVersion: v1
+data:
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-07-11T19:48:13Z"
+  name: ttabae-config
+  namespace: cka
+  resourceVersion: "215097"
+  uid: f12ab6ee-63e8-4615-9f6e-a149f8717065
+
+
+
+apiVersion: v1
+data:
+  INTERVAL: "10"
+  OPTION: boy
+  nginx-config.conf: |
+    server {
+        listen   80;
+        server_name  www.example.com;
+
+        gzip on;
+        gzip_types text/plain application/xml;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-07-11T19:48:13Z"
+  name: ttabae-config
+  namespace: cka
+
+
+
+
+

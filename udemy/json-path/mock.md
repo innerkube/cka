@@ -10,6 +10,20 @@ Answer should be in the format: InternalIP of controlplane<space>InternalIP of n
 
 ```
 
+# json exchange
+
+```
+kubectl get nodes -o json | jq -c 'path' | grep type | grep -v condition
+
+> ...
+
+
+kubectl get nodes -o jsonpath='{.items[0],status.address}` | jq
+
+> ...
+
+
+```
 
 # solution
 
