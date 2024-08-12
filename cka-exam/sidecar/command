@@ -1,0 +1,7 @@
+
+
+
+# log print
+
+> kubectl logs eshop-cart-app -c sidecar
+

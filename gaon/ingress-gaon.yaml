@@ -14,7 +14,31 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: nginx-ingress
             port:
               number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  labels:
+    app: nginx-ingress
+spec:
+  #type: LoadBalancer
+  type: ClusterIP
+    #type: NodePort
+  selector:
+    app: nginx
+  ports:
+    - port: 80
+      name: http
+      targetPort: 80
+      protocol: TCP
+        # nodePort: 30080
+        #- port: 443
+        #name: https
+        #targetPort: 443
+        #protocol: TCP
+        # nodePort: 30443
 

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: eshop-cart-app
+  namespace: cka
+spec:
+  containers:
+  - image: busybox
+    name: cart-app   
+    command:
+    - /bin/sh
+    - -c
+    - 'i=1;while :;do  echo -e "$i: Price: $((RANDOM % 10000 + 1))" >> /var/log/cart-app.log;
+      i=$((i+1)); sleep 2; done'
+    image: busybox
+    name: cart-app
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog
+  - image: busybox:1.28
+    name: count-log-1
+    args: [/bin/sh, -c, 'tail -n+1 -F /var/log/cart-app.log']
+    volumeMounts:
+    - mountPath: /var/log
+      name: varlog   
+  volumes:
+  - emptyDir: {}
+    name: varlog
+      

@@ -21,13 +21,15 @@ spec:
           name: source-code
       volumes:
       - name: source-code
-        persistentVolumeClaim:
-          claimName: source-pvc
+        hostPath:
+          path: /home/yeshua/cka/study/gaon/source  
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: php
+  labels:
+    app: php
 spec:
   ports:
   - port: 9000

@@ -37,7 +37,7 @@ data:
       excludeCIDRs: null
       minSyncPeriod: 0s
       scheduler: ""
-      strictARP: true   # add set
+      strictARP: false   # add set
       syncPeriod: 0s
       tcpFinTimeout: 0s
       tcpTimeout: 0s
@@ -52,7 +52,7 @@ data:
           infoBufferSize: "0"
       verbosity: 0
     metricsBindAddress: ""
-    mode: "ipvs"   # add set
+    mode: "iptables"   # add set
     nftables:
       masqueradeAll: false
       masqueradeBit: null

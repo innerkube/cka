@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb
+  name: db
 spec:
   selector:
     matchLabels:
-      app: mariadb
+      app: db
   template:
     metadata:
       labels:
-        app: mariadb
+        app: db
     spec:
       containers:
-      - name: mariadb
+      - name: db
         image: mariadb:latest
         env:
         - name: MYSQL_DATABASE
@@ -36,11 +36,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb
+  name: db
+  labels:
+    app: db
 spec:
+  type: NodePort
+    #type: ClusterIP
   ports:
   - port: 3306
     targetPort: 3306
+    nodePort: 30306
   selector:
-    app: mariadb
+    app: db
 
