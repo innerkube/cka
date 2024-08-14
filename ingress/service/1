@@ -1,0 +1,32 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  creationTimestamp: "2024-08-14T05:11:34Z"
+  generation: 1
+  name: prometheus-ingress
+  namespace: prometheus
+  resourceVersion: "2081170"
+  uid: 636d6087-ff17-4aef-8c6d-f5bca8d60062
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: master1.innerinfo.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-ingress
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+status:
+  loadBalancer:
+    ingress:
+    - ip: 192.168.100.62

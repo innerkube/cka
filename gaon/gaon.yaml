@@ -1,0 +1,269 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mariadb-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/yeshua/cka/study/gaon/mariadb_data # 실제 경로로 수정하세요
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: source-code-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /home/yeshua/cka/study/gaon/source
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginx-config-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /home/yeshua/cka/study/gaon/nginx
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: source-code-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-config-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: mariadb:latest
+        env:
+        - name: MYSQL_DATABASE
+          value: "gaon"
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          value: "berea6922"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "berea6922"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mariadb-storage
+      volumes:
+      - name: mariadb-storage
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  type: NodePort
+    #type: ClusterIP
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 30306
+  selector:
+    app: db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+spec:
+  selector:
+    matchLabels:
+      app: php
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      containers:
+      - name: php
+        image: hwlim78/gaon-php:v1.0 # 빌드한 이미지를 여기에 사용합니다.
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: source-code
+      volumes:
+      - name: source-code
+        hostPath:
+          path: /home/yeshua/cka/study/gaon/source
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  labels:
+    app: php
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+  selector:
+    app: php
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: hwlim78/gaon-nginx:v1.0
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: source-code
+        - mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+          name: nginx-config
+            #      initContainers:
+            #      - name: init-git
+            #        image: alpine/git
+            #        command:
+            #        - sh
+            #        - -c
+            #        - |
+            #          git clone https://github.com/yblmmen/gaon.git /tmp/gnuboard5 \
+            #          && cp -r /tmp/gnuboard5/gaon/source/* /var/www/html
+          # && mkdir /var/www/html/date
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: source-code
+      volumes:
+      - name: source-code
+        persistentVolumeClaim:
+          claimName: source-code-pvc
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+    #type: ClusterIP
+    # type: NodePort
+  selector:
+    app: nginx
+  ports:
+    - port: 80
+      name: http
+      targetPort: 80
+      protocol: TCP
+        # nodePort: 30080
+        #- port: 443
+        #name: https
+        #targetPort: 443
+        #protocol: TCP
+        # nodePort: 30443
+  externalIPs:
+    - 192.168.100.62
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gaon-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: worker2.innerinfo.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-ingress
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  labels:
+    app: nginx-ingress
+spec:
+  #type: LoadBalancer
+  type: ClusterIP
+    #type: NodePort
+  selector:
+    app: nginx
+  ports:
+    - port: 80
+      name: http
+      targetPort: 80
+      protocol: TCP
+

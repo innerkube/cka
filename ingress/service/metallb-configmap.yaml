@@ -26,6 +26,8 @@ spec:
     - ip-pool
   nodeSelectors:        # first-pool IP를 통해서 들어오는 노드 선택
   - matchLabels:
+      kubernetes.io/hostname: master1.innerinfo.io
+  - matchLabels:
       kubernetes.io/hostname: worker1.innerinfo.io
   - matchLabels:
       kubernetes.io/hostname: worker2.innerinfo.io
