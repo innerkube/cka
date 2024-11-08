@@ -1,0 +1,10 @@
+# 공식 저장소에서 CRD 설치
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/main/deployments/common/crds/k8s.nginx.org_virtualservers.yaml
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/main/deployments/common/crds/k8s.nginx.org_virtualserverroutes.yaml
+
+
+# check CRD
+
+kubectl get crd | grep nginx
+
+# 설치

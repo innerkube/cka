@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ingress-nginx-controller2
+  name: ingress-nginx-controller4
   namespace: ingress-nginx
 spec:
   type: LoadBalancer

@@ -1,0 +1,16 @@
+# gateway.yaml
+apiVersion: networking.istio.io/v1beta1  # v1alpha3 대신 v1beta1 사용
+kind: Gateway
+metadata:
+  name: cafe-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "test.innerinfo.io"

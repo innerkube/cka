@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: worker2.innerinfo.io
+  - host: worker1.innerinfo.io
     http:
       paths:
       - path: /
