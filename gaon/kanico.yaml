@@ -1,0 +1,208 @@
+---
+# MariaDB Deployment & Service
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard # Minikube 기본 스토리지 클래스 사용
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: mariadb
+          image: docker.io/hwlim78/gaon-db:v1.0  # Docker Hub 이미지 사용
+          env:
+            - name: MYSQL_DATABASE
+              value: "gaon"
+            - name: MYSQL_USER
+              value: "root"
+            - name: MYSQL_PASSWORD
+              value: "berea6922"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "berea6922"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mariadb-storage
+          persistentVolumeClaim:
+            claimName: mariadb-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+# PHP-FPM Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      initContainers:
+        - name: copy-source
+          image: busybox
+          command: ["sh", "-c", "cp -r /source/* /var/www/html"]
+          volumeMounts:
+            - name: source-code
+              mountPath: /var/www/html
+            - name: source-host
+              mountPath: /source
+      containers:
+        - name: php
+          image: docker.io/hwlim78/gaon-php:v1.0  # Docker Hub 이미지 사용
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: source-code
+              mountPath: /var/www/html
+      volumes:
+        - name: source-code
+          emptyDir: {}  # emptyDir 볼륨 사용
+        - name: source-host
+          emptyDir: {}
+          #hostPath:
+            #path: /home/ubuntu/kanico/source  # 호스트 머신의 소스 코드 경로
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-service
+spec:
+  selector:
+    app: php
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+
+---
+# Nginx ConfigMap (default.conf)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root /var/www/html;
+            index index.html index.htm;
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+            root /usr/share/nginx/html;
+        }
+    }
+    # ./images/nginx/default.conf 내용이 여기에 들어갑니다.
+
+---
+# Nginx Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+        - name: copy-source
+          image: busybox
+          command: ["sh", "-c", "cp -r /source/* /var/www/html"]
+          volumeMounts:
+            - name: source-code
+              mountPath: /var/www/html
+            - name: source-host
+              mountPath: /source
+      containers:
+        - name: nginx
+          image: docker.io/hwlim78/gaon-nginx:v1.0  # Docker Hub 이미지 사용
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: source-code
+              mountPath: /var/www/html
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+      volumes:
+        - name: source-code
+          emptyDir: {}  # emptyDir 볼륨 사용
+        - name: source-host
+          emptyDir: {}
+          #hostPath:
+            #path: /home/ubuntu/kanico/source  # 호스트 머신의 소스 코드 경로
+        - name: nginx-conf
+          configMap:
+            name: nginx-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: NodePort  # Minikube에서 외부 접근용
+  selector:
+    app: nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080  # 30000-32767 범위에서 선택
+    - name: https
+      port: 443
+      targetPort: 443
+      nodePort: 30443
